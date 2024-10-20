@@ -1,4 +1,7 @@
 # Watch Together
+Here's a quick demo of how the app works:
+
+<img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExc3ZhenNmdnZveWhqdDJ2ODN0YzlreHpidjloYnBid2QwZWI2cHVvbyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/IPZZxhtpI4bZfmVTYX/giphy.gif" alt="App Demo" width="700"/>
 
 ## Project Overview
 
