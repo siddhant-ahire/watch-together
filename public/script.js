@@ -1,5 +1,5 @@
 // backend/public/script.js
-const socket = io('http://192.168.31.61:3001'); // Adjust if using a different backend URL
+const socket = io('/'); // Adjust if using a different backend URL
 const videoPlayer = document.getElementById('videoPlayer');
 const videoSource = document.getElementById('videoSource');
 const playBtn = document.getElementById('playBtn');
@@ -9,6 +9,7 @@ const videoFileInput = document.getElementById('videoFile');
 const uploadForm = document.getElementById('uploadForm');
 const volumeControl = document.getElementById('volumeControl');
 const fullscreenBtn = document.getElementById('fullscreenBtn');
+const syncBtn = document.getElementById('syncBtn');
 
 // Handle video file upload
 uploadForm.addEventListener('submit', (event) => {
@@ -25,11 +26,18 @@ uploadForm.addEventListener('submit', (event) => {
     .then(data => {
         console.log('Video URL:', data.url);
         socket.emit('videoUrl', data.url); // Emit the video URL to other clients
+
     })
     .catch(error => {
         console.error('Error uploading video:', error);
     });
 });
+
+// Check if the user is running on localhost
+if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    const syncBtn = document.getElementById('syncBtn');
+    syncBtn.style.display = 'inline-block'; // Show the sync button only for localhost
+}
 
 // Update the seek bar as the video plays
 videoPlayer.addEventListener('timeupdate', () => {
@@ -63,6 +71,13 @@ pauseBtn.addEventListener('click', () => {
 seekBar.addEventListener('input', () => {
     videoPlayer.currentTime = seekBar.value;
     socket.emit('seek', seekBar.value); // Emit seek event to server
+});
+
+syncBtn.addEventListener('click', () => {
+    videoPlayer.currentTime = seekBar.value;
+    socket.emit('seek', seekBar.value); // Emit seek event to server
+    videoPlayer.play();
+    socket.emit('play'); // Emit play event to server
 });
 
 // Handle volume control
