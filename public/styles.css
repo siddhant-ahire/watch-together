@@ -1,0 +1,124 @@
+/* backend/public/styles.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f4f4f4;
+}
+
+.container {
+    width: 90%; /* Use a percentage for responsiveness */
+    max-width: 600px; /* Limit the maximum width */
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-size: 1.5rem; /* Responsive font size */
+    text-align: center;
+}
+
+video {
+    width: 100%; /* Make video width responsive */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 8px;
+}
+
+button {
+    padding: 10px 15px;
+    margin: 10px 0;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%; /* Full width for buttons */
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+input[type="range"] {
+    width: 100%; /* Full width for the seek bar */
+    margin: 10px 0;
+}
+
+
+#videoPlayer::-webkit-media-controls {
+    display: none !important; /* For Safari */
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Container for the volume control */
+.range-control-container {
+    width: 40%;
+    display: flex;
+    align-items: center; /* Center the slider vertically */
+    margin: 10px 0; /* Space above and below */
+    justify-content: space-between;
+}
+
+/* Style for the range label */
+.range-label {
+    margin-right: 10px; /* Space between label and slider */
+    font-size: 14px; /* Font size for the label */
+    color: #333; /* Label color */
+}
+
+/* Style for all range sliders */
+.range-slider {
+    -webkit-appearance: none; /* Remove default appearance in WebKit browsers */
+    appearance: none; /* Remove default appearance */
+    width: 100%; /* Full width */
+    height: 8px; /* Height of the slider track */
+    background: #ddd; /* Background color for the track */
+    border-radius: 5px; /* Rounded corners for the track */
+    outline: none; /* Remove outline */
+}
+
+/* Style for the slider thumb */
+.range-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Remove default appearance */
+    appearance: none; /* Remove default appearance */
+    width: 15px; /* Width of the thumb */
+    height: 15px; /* Height of the thumb */
+    border-radius: 50%; /* Rounded thumb */
+    background: #007bff; /* Color of the thumb */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background 0.3s; /* Smooth color change on hover */
+}
+
+.range-slider::-moz-range-thumb {
+    width: 15px; /* Width of the thumb */
+    height: 15px; /* Height of the thumb */
+    border-radius: 50%; /* Rounded thumb */
+    background: #007bff; /* Color of the thumb */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background 0.3s; /* Smooth color change on hover */
+}
+
+/* Change thumb color on hover */
+.range-slider:hover::-webkit-slider-thumb {
+    background: #0056b3; /* Darker color on hover */
+}
+
+.range-slider:hover::-moz-range-thumb {
+    background: #0056b3; /* Darker color on hover */
+}
+
+/* Change track color when sliding */
+.range-slider:active {
+    background: #bbb; /* Darker track color while sliding */
+}
