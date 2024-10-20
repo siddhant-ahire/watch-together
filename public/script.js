@@ -111,6 +111,27 @@ document.addEventListener('keydown', (event) => {
         event.preventDefault(); // Prevent default scroll behavior
         togglePlayPause();
     }
+    if (event.code === 'ArrowLeft' || event.code === 'ArrowRight') {
+        event.preventDefault(); // Prevent default scroll behavior
+
+        // Define the seek step in seconds
+        const step = 5; 
+
+        // Seek backward with ArrowLeft
+        if (event.code === 'ArrowLeft') {
+            seekBar.value = Math.max(0, seekBar.value - step); // Prevent going below 0
+        }
+
+        // Seek forward with ArrowRight
+        if (event.code === 'ArrowRight') {
+            console.log(seekBar.value, seekBar.max, step);
+            seekBar.value = Math.min(seekBar.max, parseInt(seekBar.value) + step); // Prevent exceeding max
+        }
+
+        // Update the video and emit the seek event
+        videoPlayer.currentTime = seekBar.value;
+        socket.emit('seek', seekBar.value);
+    }
 });
 
 // Socket event listeners for synchronization
