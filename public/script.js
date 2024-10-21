@@ -169,8 +169,13 @@ const peers = {};
 
 // Get video/audio from the user's device
 navigator.mediaDevices.getUserMedia({
+    audio: {
+        echoCancellation: { exact: true },
+        noiseSuppression: { exact: true },
+        autoGainControl: { exact: true }
+        // Add more audio constraints as needed
+    },
     video: true,
-    audio: true
 }).then(stream => {
     myStream = stream;
     myVideo.srcObject = stream;
@@ -194,7 +199,10 @@ navigator.mediaDevices.getUserMedia({
 
 function connectToNewUser(userId, stream) {
     const peerConnection = new RTCPeerConnection({
-        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
+        codecPreferences: [
+            { mimeType: 'audio/opus' }
+        ]
     });
 
     peers[userId] = peerConnection;
