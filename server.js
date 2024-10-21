@@ -2,9 +2,12 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
+require('dotenv').config();
 const cors = require('cors');
 const path = require('path');
 const multer = require('multer');
+const { v4: uuidV4 } = require('uuid');
+
 
 // Setup storage for uploaded videos
 const storage = multer.diskStorage({
@@ -34,7 +37,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve uploaded files
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-
+// Generate a room id when user accesses the root
+app.get('/', (req, res) => {
+    res.redirect(`/${uuidV4()}`);
+  });
+  
+// Render the video chat room
+app.get('/:room', (req, res) => {
+    res.render('index', { roomId: req.params.room });
+});
 io.on('connection', (socket) => {
     console.log('A user connected');
 
@@ -42,6 +53,27 @@ io.on('connection', (socket) => {
     if (currentVideoUrl) {
         socket.emit('videoUrl', currentVideoUrl); // Send the current video URL
     }
+
+    socket.on('join-room', (roomId) => {
+        socket.join(roomId);
+        socket.to(roomId).emit('user-connected', socket.id);
+
+        socket.on('disconnect', () => {
+            socket.to(roomId).emit('user-disconnected', socket.id);
+        });
+
+        socket.on('offer', (offer, to) => {
+            socket.to(to).emit('offer', offer, socket.id);
+        });
+
+        socket.on('answer', (answer, to) => {
+            socket.to(to).emit('answer', answer, socket.id);
+        });
+
+        socket.on('ice-candidate', (candidate, to) => {
+            socket.to(to).emit('ice-candidate', candidate, socket.id);
+        });
+    });
 
     socket.on('play', () => {
         socket.broadcast.emit('play'); // Broadcast play to other clients
@@ -78,6 +110,6 @@ app.get('/', (req, res) => {
 
 const PORT = process.env.PORT || 3001;
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`);
 });

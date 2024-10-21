@@ -122,3 +122,49 @@ input[type="range"] {
 .range-slider:active {
     background: #bbb; /* Darker track color while sliding */
 }
+
+.video-chat-container {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.video-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 150px;
+    background-color: #333;
+    padding: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .video-grid > video {
+    width: 150px;
+    height: auto;
+    margin-bottom: 4px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }  
+
+.controls {
+    margin-top: 20px;
+  }
+  
+.controls >  button {
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  
+.controls > button:hover {
+    background-color: #0056b3;
+  }

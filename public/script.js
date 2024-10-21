@@ -11,6 +11,7 @@ const volumeControl = document.getElementById('volumeControl');
 const fullscreenBtn = document.getElementById('fullscreenBtn');
 const syncBtn = document.getElementById('syncBtn');
 
+
 // Handle video file upload
 uploadForm.addEventListener('submit', (event) => {
     event.preventDefault(); // Prevent default form submission
@@ -152,4 +153,130 @@ socket.on('videoUrl', (url) => {
     videoSource.src = url; // Update the video source to the new URL
     videoPlayer.load(); // Load the new video
     videoPlayer.style.display = 'block'; // Show the video player
+});
+
+
+// Handle Video Chat Functionality>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<**********************
+const myVideo = document.getElementById('my-video');
+const muteButton = document.getElementById('muteButton');
+const cameraButton = document.getElementById('cameraButton');
+const videoGrid = document.getElementById('video-grid');
+
+let myStream;
+let audioEnabled = true;
+let videoEnabled = true;
+const peers = {};
+
+// Get video/audio from the user's device
+navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: true
+}).then(stream => {
+    myStream = stream;
+    myVideo.srcObject = stream;
+
+    socket.emit('join-room', ROOM_ID);
+
+    socket.on('user-connected', userId => {
+        connectToNewUser(userId, stream);
+    });
+
+    // Listen for other events
+    socket.on('user-disconnected', userId => {
+        if (peers[userId]) {
+            peers[userId].close();
+            delete peers[userId];
+            const remoteVideo = document.getElementById(userId);
+            if (remoteVideo) remoteVideo.remove();
+        }
+    });
+});
+
+function connectToNewUser(userId, stream) {
+    const peerConnection = new RTCPeerConnection({
+        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+    });
+
+    peers[userId] = peerConnection;
+
+    stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+
+    peerConnection.onicecandidate = event => {
+        if (event.candidate) {
+            socket.emit('ice-candidate', event.candidate, userId);
+        }
+    };
+
+    peerConnection.ontrack = event => {
+        addRemoteVideo(userId, event.streams[0]);
+    };
+
+    peerConnection.createOffer().then(offer => {
+        return peerConnection.setLocalDescription(offer);
+    }).then(() => {
+        socket.emit('offer', peerConnection.localDescription, userId);
+    });
+}
+
+socket.on('offer', (offer, userId) => {
+    const peerConnection = new RTCPeerConnection({
+        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+    });
+
+    peers[userId] = peerConnection;
+
+    peerConnection.setRemoteDescription(offer).then(() => {
+        myStream.getTracks().forEach(track => peerConnection.addTrack(track, myStream));
+        return peerConnection.createAnswer();
+    }).then(answer => {
+        return peerConnection.setLocalDescription(answer);
+    }).then(() => {
+        socket.emit('answer', peerConnection.localDescription, userId);
+    });
+
+    peerConnection.onicecandidate = event => {
+        if (event.candidate) {
+            socket.emit('ice-candidate', event.candidate, userId);
+        }
+    };
+
+    peerConnection.ontrack = event => {
+        addRemoteVideo(userId, event.streams[0]);
+    };
+});
+
+socket.on('answer', (answer, userId) => {
+    peers[userId].setRemoteDescription(answer);
+});
+
+socket.on('ice-candidate', (candidate, userId) => {
+    peers[userId].addIceCandidate(new RTCIceCandidate(candidate));
+});
+
+function addRemoteVideo(userId, stream) {
+    let videoElement = document.getElementById(userId);
+    if (!videoElement) {
+        videoElement = document.createElement('video');
+        videoElement.id = userId;
+        videoElement.autoplay = true;
+        videoElement.playsinline = true; // Better for mobile devices
+        videoGrid.append(videoElement);
+    }
+    videoElement.srcObject = stream;
+}
+
+muteButton.addEventListener('click', () => {
+    audioEnabled = !audioEnabled;
+    myStream.getAudioTracks().forEach(track => {
+        track.enabled = audioEnabled;
+    });
+    muteButton.textContent = audioEnabled ? 'Mute' : 'Unmute';
+});
+
+cameraButton.addEventListener('click', () => {
+    videoEnabled = !videoEnabled;
+    myStream.getVideoTracks().forEach(track => {
+        track.enabled = videoEnabled;
+    });
+    cameraButton.textContent = videoEnabled ? 'Turn Camera Off' : 'Turn Camera On';
 });

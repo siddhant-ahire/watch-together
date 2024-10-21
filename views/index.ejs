@@ -33,6 +33,22 @@
         <button id="pauseBtn">Pause</button>
         <button id="syncBtn" style="display: none;">Sync</button>
     </div>
+    <div class="video-chat-container" id="video-chat-container">
+        <div class="video-grid">
+            <video id="my-video" autoplay playsinline></video>
+            <div id="video-grid">
+            </div>
+        </div>
+          <!-- Buttons for controlling microphone and camera -->
+        <div class="controls">
+            <button id="muteButton">Mute</button>
+            <button id="cameraButton">Turn Camera Off</button>
+        </div>
+    </div>
+    
+    <script>
+        const ROOM_ID = "<%= roomId %>";
+      </script>
     <script src="/script.js"></script>
 </body>
 </html>
