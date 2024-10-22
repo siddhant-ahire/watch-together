@@ -155,6 +155,20 @@ socket.on('videoUrl', (url) => {
     videoPlayer.style.display = 'block'; // Show the video player
 });
 
+//video size controller
+const videoSizeButtonIncrease = document.getElementById('video-size-button-increase');
+const videoSizeButtonDecrease = document.getElementById('video-size-button-decrease');
+videoSizeButtonIncrease.addEventListener('click', () => {
+    // Get the current width and remove 'px' from the value
+    let currentWidth = parseInt(window.getComputedStyle(videoPlayer).width);
+    videoPlayer.style.width = (currentWidth + 50) + 'px';
+});
+videoSizeButtonDecrease.addEventListener('click', () => {
+    // Get the current width and remove 'px' from the value
+    let currentWidth = parseInt(window.getComputedStyle(videoPlayer).width);
+    videoPlayer.style.width = (currentWidth - 50) + 'px';
+});
+
 
 // Handle Video Chat Functionality>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<**********************
 const myVideo = document.getElementById('my-video');
@@ -163,18 +177,19 @@ const cameraButton = document.getElementById('cameraButton');
 const videoGrid = document.getElementById('video-grid');
 
 let myStream;
-let audioEnabled = true;
+// let audioEnabled = true;
 let videoEnabled = true;
 const peers = {};
 
 // Get video/audio from the user's device
 navigator.mediaDevices.getUserMedia({
-    audio: {
-        echoCancellation: { exact: true },
-        noiseSuppression: { exact: true },
-        autoGainControl: { exact: true }
-        // Add more audio constraints as needed
-    },
+    // audio: {
+    //     echoCancellation: { exact: true },
+    //     noiseSuppression: { exact: true },
+    //     autoGainControl: { exact: true }
+    //     // Add more audio constraints as needed
+    // },
+
     video: true,
 }).then(stream => {
     myStream = stream;
@@ -273,13 +288,13 @@ function addRemoteVideo(userId, stream) {
     videoElement.srcObject = stream;
 }
 
-muteButton.addEventListener('click', () => {
-    audioEnabled = !audioEnabled;
-    myStream.getAudioTracks().forEach(track => {
-        track.enabled = audioEnabled;
-    });
-    muteButton.textContent = audioEnabled ? 'Mute' : 'Unmute';
-});
+// muteButton.addEventListener('click', () => {
+//     audioEnabled = !audioEnabled;
+//     myStream.getAudioTracks().forEach(track => {
+//         track.enabled = audioEnabled;
+//     });
+//     muteButton.textContent = audioEnabled ? 'Mute' : 'Unmute';
+// });
 
 cameraButton.addEventListener('click', () => {
     videoEnabled = !videoEnabled;

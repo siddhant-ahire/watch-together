@@ -9,7 +9,11 @@
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-    <div class="container">
+    <div id="video-size-controller">
+        <button class="video-size-button" id="video-size-button-increase">Increase</button>
+        <button class="video-size-button" id="video-size-button-decrease">Decrease</button>
+    </div>
+    <div class="container" id="container">
         <h1>Watch Together</h1>
         <form id="uploadForm" enctype="multipart/form-data">
             <input type="file" id="videoFile" name="videoFile" accept="video/*" required>
@@ -34,15 +38,15 @@
         <button id="syncBtn" style="display: none;">Sync</button>
     </div>
     <div class="video-chat-container" id="video-chat-container">
+        <!-- Buttons for controlling microphone and camera -->
+        <div class="controls">
+            <!-- <button id="muteButton">Unmute</button> --> <!-- not using right now -->
+            <button id="cameraButton">Turn Camera Off</button>
+        </div>
         <div class="video-grid">
             <video id="my-video" autoplay playsinline muted></video>
             <div id="video-grid">
             </div>
-        </div>
-          <!-- Buttons for controlling microphone and camera -->
-        <div class="controls">
-            <button id="muteButton">Mute</button>
-            <button id="cameraButton">Turn Camera Off</button>
         </div>
     </div>
     
